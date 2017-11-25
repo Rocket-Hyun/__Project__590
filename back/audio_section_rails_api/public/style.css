@@ -1,0 +1,35 @@
+.navbar-brand {
+  padding: 5px 15px;
+}
+
+.navbar.navbar-default {
+  margin-bottom:0px;
+}
+
+.brand {
+  height:80%;
+}
+
+.section {
+  padding: 0 15px;
+}
+
+.ad-section {
+  height:150px;
+  background-image: url("http://mblogthumb2.phinf.naver.net/MjAxNzAxMjZfNDkg/MDAxNDg1MzkzMDM1MTc0.if5H5FxB02L2A8koOfwz4qpEoYQMuZn2W0qEKdsVatog.1LY6DYawtdfFjtJsrXAQEiSmLA26O16CszmmLoLFqZQg.JPEG.naver_diary/4.jpg?type=w2");
+  background-size: cover;
+  background-position: bottom;
+}
+
+
+.chart-title {
+  font-size: 1.2em;
+}
+
+.ranks {
+  height:50px;
+}
+
+.rank-circle {
+  width:80%;
+}

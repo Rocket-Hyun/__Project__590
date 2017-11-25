@@ -1,0 +1,9 @@
+# Read about fixtures at http://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+
+one:
+  voice_url: MyString
+  clip_id: MyString
+
+two:
+  voice_url: MyString
+  clip_id: MyString

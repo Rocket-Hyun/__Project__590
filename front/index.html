@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <title>590</title>
+    <!-- 뷰JS 임포트 -->
+    <script src="https://unpkg.com/vue"></script>
+  </head>
+  <body>
+    <!-- <div id="app-1">
+      <span title="gogo">
+        {{ message }}
+      </span>
+    </div>
+    <div id="app-2">
+      <span v-bind:title="message">
+        내 위에 잠시 마우스를 올리면 동적으로 바인딩 된 title을 볼 수 있습니다!
+      </span>
+    </div>
+    <div id="app-3">
+      <p v-if="seen">이제 나를 볼 수 있어요</p>
+    </div>
+    <div id="app-4">
+      <ol>
+        <li v-for="todo in todos">
+          {{ todo.text }}
+        </li>
+      </ol>
+    </div>
+
+    <div id="app-5">
+      <p>{{ message }}</p>
+      <button v-on:click="reverseMessage">메시지 뒤집기</button>
+    </div>
+
+    <div id="app-6">
+      <p>{{ message }}</p>
+      <input v-model="message">
+    </div> -->
+
+    <!-- <div id="app-7">
+      <ol>
+        <todo-item
+          v-for="item in groceryList"
+          v-bind:todo = "item.text"
+          v-bind:key_id = "item.id"
+          v-bind:count = "item.count">
+
+        </todo-item>
+      </ol>
+    </div> -->
+
+    <div id="app">
+      <app-nav
+        v-bind:title = "app_title">
+      </app-nav>
+      <app-view>
+        <app-sidebar></app-sidebar>
+        <app-content></app-content>
+      </app-view>
+    </div>
+
+    <script src="./todo-item.component.js"></script>
+    <script src="./nav.component.js"></script>
+    <script src="./main.js"></script>
+  </body>
+</html>

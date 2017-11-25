@@ -1,0 +1,48 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>
+    <script
+            src="https://code.jquery.com/jquery-2.2.4.min.js"
+            integrity="sha256-BbhdlvQf/xTY9gja0Dq3HiwQF8LaCRTXxZKRutelT44="
+            crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.form/4.2.2/jquery.form.min.js" integrity="sha384-FzT3vTVGXqf7wRfy8k4BiyzvbNfeYjK+frTVqZeNDFl8woCbF0CYG6g2fMEFFo/i" crossorigin="anonymous"></script>
+</head>
+<body>
+오디오의 id: <input type="text" name="audio_id"> <br>
+녹음파일: <input type="file" name="record_file"> <br>
+구간 시작: <input type="text" name="section_start"> <br>
+구간 끝: <input type="text" name="section_end"><br>
+<button onclick="submittt()">전송</button>
+<hr>
+<audio controls="controls" id="myAudio">
+    <source src="./mixaudio/2LLTK.mp3" type="audio/mp3" />
+    Your browser does not support the audio element.
+</audio>
+<script>
+    function submittt() {
+        var formData = new FormData();
+        formData.append("audio_id", $("input[name=audio_id]").val());
+        formData.append("record_file", $("input[type=file]")[0].files[0]);
+        formData.append("section_start", $("input[name=section_start]").val());
+        formData.append("section_end", $("input[name=section_end]").val());
+
+        $.ajax({
+            method: "POST",
+            url: "http://210.89.181.131:3000/clips",
+//            url: "http://localhost:3000/clips",
+            data: formData,
+            contentType: false,
+            processData: false
+        }).
+        done(function( msg ) {
+            console.log(msg);
+        });
+    }
+</script>
+</body>
+</html>

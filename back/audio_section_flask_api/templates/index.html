@@ -1,0 +1,449 @@
+<html>
+  <head>
+    <meta charset="utf-8">
+    <title>오디오 클립</title>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+  <script
+        src="https://code.jquery.com/jquery-2.2.4.min.js"
+        integrity="sha256-BbhdlvQf/xTY9gja0Dq3HiwQF8LaCRTXxZKRutelT44="
+        crossorigin="anonymous"></script>
+  <script src="http://210.89.181.131:3000/js/nouislider.min.js"></script>
+  <link rel="stylesheet" href="http://210.89.181.131:3000/css/nouislider.min.css">
+  <link rel="stylesheet" href="http://210.89.181.131:3000/css/style.css">
+  <link rel="stylesheet" href="http://210.89.181.131:3000/css/share.css">
+
+  <script src="http://210.89.181.131:3000/js/share.js"></script>
+  <script src="http://210.89.181.131:3000/js/main.js"></script>
+  <script src="http://210.89.181.131:3000/js/audiodisplay.js"></script>
+
+  <!-- 카카오톡 SDK JS 임포트-->
+  <script src="https://developers.kakao.com/sdk/js/kakao.js"></script>
+
+  <!-- Latest compiled and minified CSS -->
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
+  <link rel="stylesheet" href="http://210.89.181.131:3000/css/style2.css">
+
+  <!-- font awesome -->
+  <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet" integrity="sha384-wvfXpqpZZVQGK6TAh5PVlGOfQNHSoD2xbE+QkPxCAFlNEevoEH3Sl0sibVcOQVnN" crossorigin="anonymous">
+</head>
+  <!-- <script src="https://developers.kakao.com/sdk/js/kakao.js"></script> -->
+  <style>
+
+  </style>
+</head>
+
+<body>
+
+  <!--  -->
+  <nav class="navbar navbar-default">
+    <div class="container-fluid">
+      <div class="navbar-header">
+        <a class="navbar-brand" href="#">
+          <!-- <h1 class="brand"></h1> -->
+          <img class="brand" alt="Brand" src="http://210.89.181.131:3000/img/logo.png">
+        </a>
+      </div>
+    </div>
+  </nav>
+  <div class="detail-section section">
+    <div class="detail-img">
+      <div class="circle-wrapper">
+          <img class="detail-circle" src="http://210.89.181.131:3000/img/circle1.png" alt="">
+      </div>
+    </div>
+    <div class="detail-title">
+      <h3 class="detail">53. 프로그래머를 위한 선형 대학 수학</h3>
+    </div>
+    <div class="detail-like">
+      <i class="fa fa-heart" aria-hidden="true"> 130</i>
+      <i class="fa fa-comment" aria-hidden="true"> 20</i>
+      <i class="fa fa-share" aria-hidden="true"> 30</i>
+    </div>
+  </div>
+  <hr>
+  <div class="play-button-section section">
+  </div>
+
+  <!--  -->
+
+  <div>
+    <!--모든 오디오 확장자 첨부 가능-->
+    <!-- <input type="file" class = "File" id="File" accept="audio/*" autoplay><p> -->
+    <audio class = "audio" controls="controls" id="myAudio" src="http://210.89.181.131:3000/audio_sample/2.mp4"
+      style="width : 80%; margin: 20px; ">
+      <source class = "audio" src="voice_data/sentence.ogg" type="audio/ogg" />
+      <source class = "audio" src="voice_data/sentence.wav" type="audio/wav" />
+    </audio>
+  </div>
+  <div id = "slider" class="slider"></div>
+  <div>
+    <!-- <div>
+      파일 재생, 정지 버튼
+      <input class = "play" type="button"	id = "btn_audio"	src=null  disabled=true value = "재생"	style="cursor:pointer; width:50px; height:50px;"/>
+    </div> -->
+    <!--시작 지정 버튼-->
+    <div>
+      <div><input type="text" id ="input0" disabled=true style = "margin-left:50;"> <input type="text" id ="input1" disabled=true "margin-right:40;"><br></div>
+      <!-- <div><input type="response" id ="response" disabled=true><br></div> -->
+    </div>
+    <div>
+      <input class = "start" type="button"	id = "btn_start"	disabled=true value="시작시간 저장"	style="cursor:pointer; width:100px; height:30px;"/>
+      <!--종료 지정 버튼-->
+      <input class = "end" type="button"	id = "btn_end"	disabled=true value="종료시간 저장"	style="cursor:pointer; width:100px; height:30px;"/>
+    </div>
+    <div>
+	    <div id="viz">
+		    <canvas id="analyser" width="100" height="10"></canvas><br>
+		    <canvas id="wavedisplay" width="100" height="10"></canvas>
+	    </div>
+	    <div id="controls">
+		    <img id="record" src="img/mic128.png" onclick="toggleRecording(this);" style="width:50px; height:50px;"/>
+		    <a id="save" href="#"><img src="img/save.svg"  style="width:50px; height:50px;"></a>
+	    </div>
+    </div>
+    <div>
+      <!-- 공유 버튼 -->
+      <!-- <span class="more">
+        <span class="blind"> 공유 v</span>
+      </span> -->
+      <div class="share-btns">
+        <!-- 카카오톡 공유버튼 -->
+        <a id="kakao-link-btn" href="javascript:;">
+          <img class="share-btn" src="//developers.kakao.com/assets/img/about/logos/kakaolink/kakaolink_btn_medium.png"/>
+        </a>
+        <!-- 페이스북 공유버튼 -->
+        <a id="facebook-link-btn" href="javascript:facebook_share_button_link();">
+          <img class="share-btn" src="//facebookbrand.com/wp-content/themes/fb-branding/prj-fb-branding/assets/images/fb-art.png"/>
+        </a>
+      </div>
+      <div>
+        <input class = "getFile" type="button"	id = "btn_getFile"	value="파일 불러오기"	style="cursor:pointer; width:100px; height:30px;"/>
+      </div>
+      <!-- <input class = "share" type="button"	id = "btn_share"	disabled=true value="공유"	style="cursor:pointer; width:50px; height:50px;"/> -->
+    </div>
+    <div>
+
+  </div>
+
+  <script>
+
+  var slider = document.getElementById('slider');
+  var myAudio = document.getElementById("myAudio");
+  var response = document.getElementById('response');
+  var $audio_state = "btn_play";
+  var $time = 0;//myAudio.currentTime;
+  var noAudio = myAudio.src;
+  var duration = 0; //음악 전체 길이
+
+  var startTime = document.getElementById('input0'); //시작 시간
+  var endTime = document.getElementById('input1'); //종료 시간
+  var inputs = [input0, input1];// 카카오톡 초기화
+
+  var hasURLParameter = false;
+  var IsfirstLoad = true;//처음 로드된것인가
+  var input_btn_click = false;//input으로 클릭된 값인가.
+  $btn_audio = $('#btn_audio');
+
+  // url 파라미터를 추출하는 함수
+  function getURLParameter(name) {
+     return decodeURIComponent((new RegExp('[?|&]' + name + '=' + '([^&;]+?)(&|#|;|$)').exec(location.search) || [null, ''])[1].replace(/\+/g, '%20')) || null;
+  }
+
+  // 문서를 로드할때 url 파라미터 값이 있으면 startTime과 endTime을 해당 값들로 초기화 하며
+  // 오디오도 해당 시간에 맞춰서 재생된다.
+  if(getURLParameter('startTime'))
+  {
+      hasURLParameter = true;
+      startTime = getURLParameter('startTime');
+      endTime = getURLParameter('endTime');
+      // $('#startTime').val(startTime);
+      // $('#endTime').val(endTime);
+      myAudio.currentTime = startTime;
+      inputs[0].value = startTime;
+      inputs[1].value = endTime;
+      myAudio.play();
+  }
+
+  function postAudio(audioBlob) {
+      $.ajax({
+          method: "POST",
+          url: "http://210.89.181.131/clips",
+          data: {audio_id:"1", record_file: audioBlob, section_start: startTime, section_end: endTime},
+          success:function(data)
+          {
+            console.log("성공");
+          }
+          ,error:function(data){
+            console.log("실패");
+          }
+      }).
+      done(function( msg ) {
+          console.log(msg);
+      });
+  }
+
+  var audio_id, password, section_start, section_end;
+
+  // Request Method :: GET
+  function getAudio()
+  {
+    $.ajax({
+      dataType: "json",
+      type: "GET",
+      url: "http://210.89.181.131:3000/audio_sample",
+    }).
+    done(function( msg ) {
+      console.log("success");
+    });
+  }
+
+  //파일불러오기 버튼이 클릭되면
+  $('.getFile').click(function(){
+    myAudio.src = "http://210.89.181.131:3000/audio_sample/2.mp4";
+    myAudio.load();
+  });
+
+  noUiSlider.create(slider, {
+	  start: [ 0, 0 ],
+  	// behaviour: 'drag',
+	  connect: true,
+    // pips: {
+		//   mode: 'values',
+		//   values: [0, 25, 50, 100],
+		//   density: 4
+	  // },
+  	tooltips: true,
+	  range: {
+		  'min': 0,
+		  'max': 100
+	  }//최소, 최대
+  });
+
+  function setstartTime(now, moveAudio)
+  {
+    startTime = now;
+    if(endTime < startTime){
+      setendTime(now);
+    }
+    inputs[0].value = now;
+    // if(moveAudio==true)
+    //   myAudio.currentTime = now;
+  }
+
+  function setendTime(now, moveAudio)
+  {
+    endTime = now;
+    if(endTime < startTime){
+      setstartTime(now);
+    }
+    inputs[1].value = now;
+    // if(moveAudio==true)
+    //   myAudio.currentTime = now;
+  }
+
+  function setSlide(values, handle){
+    var value = values[handle];
+    console.log(handle);
+    //슬라이더 이동 시 currentTime 변경
+    //-> 뒤에 핸들 값으로 변경되서 앞에꺼만 움직였는데도 뒤에값으로 갱신됨
+    // if(IsfirstLoad == false)
+    // {
+    //    myAudio.currentTime = value;
+    // }
+    if(handle == 0)//시작 타임
+    {
+      setstartTime(value, true);
+    }
+    else {
+      //inputs[1].value = value;
+      setendTime(value, true);
+      IsfirstLoad = false;
+    }
+  }
+
+  //슬라이더 핸들러 값 변경시
+  //1. 슬라이더 -> player -> input
+  slider.noUiSlider.on('change',function(values, handle){
+    setSlide(values, handle);
+    if(input_btn_click == true)
+    {
+      input_btn_click = false;
+      if(handle==1)
+      {
+        input_btn_click = true;
+      }
+    }
+    // else {
+    //   myAudio.currentTime = values[handle];
+    // }
+    //myAudio.currentTime=value;
+  });
+
+  // //input -> player -> 슬라이더
+  // inputs.forEach(function(input, handle) {
+  //   //텍스트 값 변경 시
+  //   input.addEventListener('change', function(event){
+  // 		setSliderHandle(event, handle, this.value);
+  //   });
+  //   	// input.addEventListener('keydown', function( e ) {
+  //     //   setSliderHandle(handle, this.value);
+  //   	// });
+  // });
+
+  //슬라이더 i번째 핸들 value 값으로 바꾸기
+  function setSliderHandle(event, i, value) {
+	  var r = [null,null];
+	  r[i] = value;
+	  slider.noUiSlider.set(r);
+    event.stopImmediatePropagation();//슬라이더 이동 이벤트 하지 않음
+  }
+
+  //player -> 슬라이더 -> input
+  //시작시간저장 버튼이 클릭되면
+  $('.start').click(function(event){
+
+    inputs[0].value = myAudio.currentTime;//input
+    setstartTime(myAudio.currentTime);
+    //범위 벗어나면
+    if(startTime<0)
+    {
+      startTime = 0;
+    }else if(startTime>duration)
+    {
+      startTime = duration;
+    }
+    if(endTime < startTime)
+    {
+      endTime = startTime;
+    }
+    input_btn_click = true;
+    slider.noUiSlider.set([startTime, endTime]);//슬라이더
+
+    //상위로 이벤트가 전파되지 않도록 중단한다.
+    //event.stopPropagation();
+  });
+
+  //종료시간저장 버튼이 클릭되면
+  $('.end').click(function(){
+    console.log("End Time");
+    setendTime(myAudio.currentTime);
+    //범위 벗어나면
+    if(endTime<0)
+    {
+      endTime = 0;
+    }else if(endTime>duration)
+    {
+      endTime = duration;
+    }
+    if(endTime < startTime)
+    {
+      startTime = endTime;
+    }
+    input_btn_click = true;
+    slider.noUiSlider.set([startTime,endTime]);
+  });
+
+  //#myAdio에서 작동
+  //#File 바뀔 때 함수 호출됨
+  $('.File').on('change', function(e) {
+    var target = e.currentTarget; //오디오 타겟
+    var file = target.files[0];
+    time = 0;
+    IsfirstLoad = true;
+    //$('.play').attr("disabled", true);
+    if (target.files && file) { //파일 있으면
+      var reader = new FileReader(); //파일 리더기
+      reader.onload = function (e) {
+          myAudio.src = e.target.result;//audio 소스에 input에 있는 파일 넣기
+          //$audio.play();
+      }
+      reader.readAsDataURL(file);//file 읽기
+    }
+  });
+
+  //선택된 음악이 로드될 때 까지 기다렸다가 실행
+  myAudio.addEventListener("loadedmetadata", function(_event) {
+
+    duration = myAudio.duration;//길이 갱신
+    slider.noUiSlider.updateOptions({
+    range: {
+        'min': 0,
+        'max': duration//종료 시간 갱신
+    },
+    start: [ 0, duration ]
+    })
+
+    if(hasURLParameter==true)
+    {
+      slider.noUiSlider.set([startTime, endTime]);//슬라이더
+    }
+    else {
+
+    setstartTime(0);
+    setendTime(duration);
+
+    // To re-enable
+    var origins = slider.getElementsByClassName('noUi-origin');
+    origins[0].removeAttribute('disabled');
+    origins[1].removeAttribute('disabled');
+
+    //재생, 저장 버튼 활성화
+    $('.play').attr("disabled", false);
+    $('.start').attr("disabled", false);
+    $('.end').attr("disabled", false);
+    $('.share').attr("disabled", false);
+}
+    //console.log(slider.range);
+    //slider.range.min = duration;
+    //TODO whatever
+  });
+
+  $(document).ready(function(){
+      // To disable one handle
+      Kakao.init('2dcc82c81e3a73ed534cec2802c366e5');//카카오 key
+      var origins = slider.getElementsByClassName('noUi-origin');
+      origins[0].setAttribute('disabled', true);
+      origins[1].setAttribute('disabled', true);
+      $('#slider').next().find('.ui-slider-handle').hide();
+  });
+
+  //share 버튼이 클릭되면
+  //구간 공유 저장
+  $('.share-btns').click(
+    function(){
+      //var com =  GetComponent("js/record");
+      console.log("33"+UURL);
+
+      //var link = document.getElementById("save");
+      //console.log(url);
+      //console.log(Recorder.getBuffers);
+      // $.ajax({
+      //     method: "POST",
+      //     url: "http://210.89.181.131/clips",
+      //     data: {audio_id:"1", record_file:getBlob(), section_start: startTime, section_end: endTime},
+      //     success:function(data)
+      //     {
+      //       console.log("성공");
+      //     }
+      //     ,error:function(data){
+      //       console.log("실패");
+      //     }
+      // }).
+      // done(function( msg ) {
+      //     console.log(msg);
+      // });
+  });
+
+  // //공유 버튼 클릭시 (facebook, kakao 선택 버튼 나옴)
+  // function sharMore(){
+  //   //$("div:hidden").slice(0, 10).show(); // 숨김 설정된 다음 10개를 선택하여 표시
+  //   foldLeftmenu();
+  // }
+
+  </script>
+  <link rel="stylesheet" href="http://210.89.181.131:3000/css/record.css">
+  <script src="http://210.89.181.131:3000/js/record.js"></script>
+  <script src="http://210.89.181.131:3000/js/recorderWorker.js"></script>
+</body>

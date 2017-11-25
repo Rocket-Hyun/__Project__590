@@ -1,0 +1,216 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>오디오 구간 공유</title>
+    <!-- 카카오톡 SDK JS 임포트-->
+    <script src="https://developers.kakao.com/sdk/js/kakao.js"></script>
+    <!-- Jquery 임포트-->
+    <script
+            src="https://code.jquery.com/jquery-3.2.1.min.js"
+            integrity="sha256-hwg4gsxgFZhOsEEamdOYGBf13FyQuiTwlAQgxVSNgt4="
+            crossorigin="anonymous"></script>
+    <style>
+        div {
+            margin: 10px 0;
+        }
+        .section-divider{
+            margin: 50px 0;
+        }
+        .share-btn {
+            width:50px;
+        }
+        .share-btns{
+            display: none;
+        }
+    </style>
+</head>
+<body>
+<h1>네이버 핵데이 - 오디오 구간 공유</h1>
+<div class="section-divider">
+    <div>
+        <audio controls="controls" id="myAudio">
+            <source src="../voice_data/sentence.ogg" type="audio/ogg" />
+            <source src="../voice_data/sentence.wav" type="audio/wav" />
+            Your browser does not support the audio element.
+        </audio>
+    </div>
+    <div>
+        <button onclick="aud_play_pause()">Play</button>
+        <button onclick="get_time()" id="get_time_btn">Get Start Play Time</button>
+    </div>
+    <div>
+        <div>
+            <!--특정 구간 시작 시간-->
+            <label>Start Playing time:</label><input type="text" id="start_time">
+        </div>
+        <div>
+            <!--특정 구간 끝 시간-->
+            <label>End Playing time:</label><input type="text" id="end_time">
+        </div>
+        <div>
+            <!--특정 구간만 재생-->
+            <button onclick="play_specific_time()">Play Specific!</button>
+        </div>
+        <div class="share-btns">
+            <!-- 카카오톡 공유버튼 -->
+            <a id="kakao-link-btn" href="javascript:;">
+                <img class="share-btn" src="//developers.kakao.com/assets/img/about/logos/kakaolink/kakaolink_btn_medium.png"/>
+            </a>
+            <!-- 페이스북 공유버튼 -->
+            <a href="javascript:facebook_share_button_link();">
+                <img class="share-btn" src="https://facebookbrand.com/wp-content/themes/fb-branding/prj-fb-branding/assets/images/fb-art.png"/>
+            </a>
+        </div>
+    </div>
+</div>
+
+<!-- 외부 오디오 파일은 URI Fragments로도 특정 구간 재생 가능 -->
+<div class="section-divider">
+        <div>
+        <label>Play first 30 seconds - 35 seconds of audio by URI Fragments</label>
+    </div>
+    <div>
+        <audio id="outAudio" controls src="https://upload.wikimedia.org/wikipedia/commons/b/be/Hidden_Tribe_-_Didgeridoo_1_Live.ogg#t=30,35"></audio><br><br>
+    </div>
+</div>
+<script>
+    // 카카오톡 초기화
+    Kakao.init('2dcc82c81e3a73ed534cec2802c366e5');
+    // 내부 오디오
+    var myAudio = document.getElementById("myAudio");
+    // 외부 URL에서 가져온 오디오
+    var outAudio = document.getElementById("outAudio");
+    // 특정 구간 추출하는 작동이 시작했는지 안했는지 판별하는 변수
+    var isStart = true;
+    // 추출을 위한 시작시간 / 끝시간 초기화
+    var startTime;
+    var endTime;
+
+    // 두 번째 오디오 파일을 시작하면 자동으로 볼륨을 0.2로 바꾸는 event listener 등록
+    outAudio.addEventListener('play',function(){
+        outAudio.volume = 0.2;
+    })
+
+    // 오디오 play pause 함수
+    function aud_play_pause() {
+        if (myAudio.paused) {
+            myAudio.play();
+        } else {
+            myAudio.pause();
+        }
+    }
+
+    // 특정 구간 시간 추출하는 함수
+    // 시작이면 isStart가 true
+    // 끝이면 isStart가 false
+    function get_time() {
+        if(isStart){
+            $("#get_time_btn").text('Get End Play Time')
+            get_start_time();
+            isStart = !isStart;
+        } else {
+            $("#get_time_btn").text('Get Start Play Time')
+            get_end_time();
+            isStart = !isStart;
+        }
+    }
+
+    // 시작 구간 시간 구하는 함수
+    function get_start_time() {
+        console.log(myAudio.currentTime);
+        // startTime 변수에 현재 구간 시간을 넣음
+        startTime = myAudio.currentTime;
+        // start_time input 태그 값에 현재 구간 시간을 넣음
+        $('#start_time').val(startTime);
+        // 아직 시작 구간만 구하고 있으므로 카카오톡 공유버튼은 숨김
+        $('.share-btns').hide();
+    }
+
+    // 끝 구간 시간 구하는 함수
+    function get_end_time() {
+        console.log(myAudio.currentTime);
+        // endTime 변수에 현재 구간 시간을 넣음
+        endTime = myAudio.currentTime;
+        // end_time input 태그 값에 현재 구간 시간을 넣음
+        $('#end_time').val(endTime);
+        // 끝 구간을 구하면 카카오톡 버튼을 초기화 한다.
+        kakao_share_button_init();
+        // 특정 구간 추출이 끝났으므로 카카오톡 공유버튼을 보여준다.
+        $('.share-btns').show();
+    }
+
+    // 오디오 play 시간을 확인해서 끝 구간보다 커지면 오디오를 정지
+    function check_time() {
+        endTime = $('#end_time').val();
+        if(myAudio.currentTime >= endTime){
+            myAudio.pause();
+        }
+    }
+
+    // 추출한 시간 특정 구간만 오디오를 재생하는 함수
+    function play_specific_time() {;
+        startTime = $('#start_time').val()
+        // 오디오에 현재 시간을 starttime으로 바꿈
+        myAudio.currentTime = startTime;
+        // 오디오 시간이 변경될 때 마다 check_time 함수를 실행하는 event listener 등록
+        myAudio.addEventListener('timeupdate', check_time);
+        // 오디오가 정지될 때 check_time 함수를 event listener에서 삭제하는 remove_stop 함수를 event listener 등록
+        // 특정 구간 재생 이후에도 더 재생할 수 있게 하기 위함
+        myAudio.addEventListener('pause', remove_stop);
+        myAudio.play();
+    }
+
+    // check_time함수를 event listener에서 삭제하는 함수
+    function remove_stop () {
+        console.log('stopped!');
+        myAudio.removeEventListener('timeupdate', check_time);
+    }
+
+    // url 파라미터를 추출하는 함수
+    function getURLParameter(name) {
+        return decodeURIComponent((new RegExp('[?|&]' + name + '=' + '([^&;]+?)(&|#|;|$)').exec(location.search) || [null, ''])[1].replace(/\+/g, '%20')) || null;
+    }
+
+    // 문서를 로드할때 url 파라미터 값이 있으면 startTime과 endTime을 해당 값들로 초기화 하며
+    // 오디오도 해당 시간에 맞춰서 재생된다.
+    if(getURLParameter('stime')) {
+        startTime = getURLParameter('stime');
+        endTime = getURLParameter('etime');
+        $('#start_time').val(startTime);
+        $('#end_time').val(endTime);
+        myAudio.currentTime = startTime;
+        myAudio.addEventListener('timeupdate', check_time);
+        myAudio.addEventListener('pause', remove_stop);
+        myAudio.play();
+    }
+
+    // 카카오톡 버튼 초기화
+    function kakao_share_button_init() {
+        console.log(startTime);
+        // 카카오링크 버튼을 생성합니다. 처음 한번만 호출하면 됩니다.
+        Kakao.Link.createDefaultButton({
+            container: '#kakao-link-btn',
+            objectType: 'feed',
+            content: {
+                title: '팥빵 공유',
+                description: '#구간공유',
+                imageUrl: 'http://www.venturesquare.net/wp-content/uploads/2017/03/170310-podbbang.-002.png',
+                link: {
+                    mobileWebUrl: 'https://rocket-hyun.github.io/Naver-Campus-Hackday/web/audio_play.html?stime='+ startTime +'&etime='+ endTime,
+                    webUrl: 'https://rocket-hyun.github.io/Naver-Campus-Hackday/web/audio_play.html?stime='+ startTime +'&etime='+ endTime,
+                }
+            }
+        });
+    }
+
+    // 페이스북 공유 링크 함수
+    function facebook_share_button_link() {
+        var hostname = window.location.hostname;
+        var pathname = window.location.pathname;
+        window.open('https://www.facebook.com/sharer/sharer.php?u=http://' + hostname + pathname + '?stime='+ startTime +'&etime='+ endTime, '_blank');
+    }
+</script>
+</body>
+</html>

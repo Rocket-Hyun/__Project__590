@@ -1,0 +1,38 @@
+.navbar-brand {
+  padding: 5px 15px;
+}
+
+.navbar.navbar-default {
+  margin-bottom:0px;
+}
+
+.brand {
+  height:80%;
+}
+
+.section {
+  padding: 0 15px;
+}
+
+.detail-section {
+  height: 300px;
+  padding-top:50px;
+}
+
+.circle-wrapper{
+  width: 150px;
+  margin:0 auto;
+}
+
+.detail-circle {
+  width:150px;
+}
+
+.detail {
+  font-size: 1.5em;
+}
+
+.detail-like {
+  display: flex;
+  justify-content: space-around;
+}
